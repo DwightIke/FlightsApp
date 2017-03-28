@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane fx:id="mainView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="348.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Views.loginViewController">
+   <children>
+      <Label layoutX="13.0" layoutY="55.0" text="Destination">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="13.0" layoutY="86.0" text="Departure date">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="12.0" layoutY="117.0" text="Departure Time">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="destinationTextField" layoutX="151.0" layoutY="53.0" />
+      <TextField fx:id="ddateTextField" layoutX="151.0" layoutY="84.0" />
+      <TextField fx:id="dtimeTextField" layoutX="151.0" layoutY="115.0" />
+      <Button fx:id="searchButton" layoutX="14.0" layoutY="157.0" mnemonicParsing="false" onAction="#searchButtonAction" prefHeight="25.0" prefWidth="286.0" text="Search" />
+      <Label layoutX="14.0" layoutY="218.0" text="Tourists">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="12.0" layoutY="248.0" text="Destination">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="12.0" layoutY="279.0" text="Tickets">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="touristsTextField" layoutX="151.0" layoutY="216.0" />
+      <TextField fx:id="bdestinationTextField" layoutX="151.0" layoutY="246.0" />
+      <TextField fx:id="ticketsTextField" layoutX="151.0" layoutY="277.0" />
+      <Button fx:id="buyticketsButton" layoutX="14.0" layoutY="310.0" mnemonicParsing="false" onAction="#buyticketsButtonAction" prefHeight="25.0" prefWidth="286.0" text="Buy Tickets" />
+      <ListView fx:id="flightsList" layoutX="317.0" layoutY="53.0" prefHeight="250.0" prefWidth="270.0" />
+      <Button fx:id="getflightsButton" layoutX="317.0" layoutY="310.0" mnemonicParsing="false" onAction="#getflightsButtonAction" prefHeight="25.0" prefWidth="270.0" text="Get Flights" />
+      <TextField fx:id="loginTextField" layoutX="151.0" layoutY="14.0" />
+      <Label layoutX="13.0" layoutY="18.0" text="Login Code:">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Button fx:id="loginButton" layoutX="317.0" layoutY="14.0" mnemonicParsing="false" onAction="#loginButtonAction" prefHeight="25.0" prefWidth="270.0" text="Login" />
+   </children>
+</Pane>
