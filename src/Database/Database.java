@@ -15,10 +15,11 @@ public class Database {
         connection.prepareStatement(sql);
     }
 
-    public Database(String path) throws ClassNotFoundException, SQLException {
+    public Database() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
-        connection = DriverManager.getConnection("jdbc:sqlite:" + path);
+        connection = DriverManager.getConnection("jdbc:sqlite:" + "mpp.db");
     }
+
     public Connection getConnection() {
         return connection;
     }

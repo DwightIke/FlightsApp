@@ -10,8 +10,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 public class Main {
 
+
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        Connection connection = new Database("D:\\mpp.db").getConnection();
+        Connection connection = new Database().getConnection();
         FlightRepository frep = new FlightRepository(connection);
         PersonRepository prep = new PersonRepository(connection);
         UserRepository urep = new UserRepository(connection);
