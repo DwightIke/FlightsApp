@@ -8,6 +8,7 @@ import Repository.UserRepository;
 import Services.FlightService;
 import Services.PersonService;
 import Services.UserService;
+import Sockets.Client;
 import Views.loginViewController;
 import javafx.application.Application;
 import javafx.scene.layout.Pane;
@@ -32,10 +33,11 @@ public class MainLayout extends Application {
     Pane pane;
     FXMLLoader loader;
     Stage primaryStage;
+
     @Override
     public void start(Stage primaryStage) throws SQLException,ClassNotFoundException, MalformedURLException, IOException {
         try {
-            Database db = new Database("D:\\mpp.db");
+            Database db = new Database();
             FlightRepository frep = new FlightRepository(db.getConnection());
             PersonRepository prep = new PersonRepository(db.getConnection());
             UserRepository urep = new UserRepository(db.getConnection());
