@@ -1,7 +1,11 @@
 package Views;
+
 import Services.FlightService;
 import Services.PersonService;
 import Services.UserService;
+import Sockets.Client;
+import Sockets.ClientListener;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -24,6 +28,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import Domain.Flight;
+
 import java.util.*;
 
 import java.sql.SQLException;
@@ -31,19 +36,33 @@ import java.sql.SQLException;
 /**
  * Created by Cosmin on 3/28/2017.
  */
-public class loginViewController {
-    @FXML private TextField loginTextField;
-    @FXML private TextField destinationTextField;
-    @FXML private TextField ddateTextField;
-    @FXML private TextField dtimeTextField;
-    @FXML private TextField touristsTextField;
-    @FXML private TextField bdestinationTextField;
-    @FXML private TextField ticketsTextField;
-    @FXML private Button loginButton;
-    @FXML private Button searchButton;
-    @FXML private Button buyticketsButton;
-    @FXML private Button getflightsButton;
-    @FXML private ListView<Flight> flightsList;
+public class loginViewController implements ClientListener {
+    @FXML
+    private TextField loginTextField;
+    @FXML
+    private TextField destinationTextField;
+    @FXML
+    private TextField ddateTextField;
+    @FXML
+    private TextField dtimeTextField;
+    @FXML
+    private TextField touristsTextField;
+    @FXML
+    private TextField bdestinationTextField;
+    @FXML
+    private TextField ticketsTextField;
+    @FXML
+    private Button loginButton;
+    @FXML
+    private Button searchButton;
+    @FXML
+    private Button buyticketsButton;
+    @FXML
+    private Button getflightsButton;
+    @FXML
+    private ListView<Flight> flightsList;
+
+    private Client client = new Client(this);
 
     FlightService fservice;
     PersonService pservice;
@@ -59,7 +78,9 @@ public class loginViewController {
         this.uservice = uservice;
         this.fmodel = FXCollections.observableArrayList(fservice.getAll());
     }
-    @FXML private void initialize() {
+
+    @FXML
+    private void initialize() {
         //flightsList.setItems(this.fmodel);
         loggedin = false;
         setDisableItems(true);
@@ -79,7 +100,9 @@ public class loginViewController {
         getflightsButton.setDisable(what);
         flightsList.setDisable(what);
     }
-    @FXML private void loginButtonAction() throws SQLException{
+
+    @FXML
+    private void loginButtonAction() throws SQLException {
         if (this.loggedin == true) {
             this.loggedin = false;
             setDisableItems(true);
@@ -90,23 +113,14 @@ public class loginViewController {
             clearSearchFields();
             showMessage(Alert.AlertType.CONFIRMATION, "Logout !", "You have been logged out !");
             return;
-        }
-        else {
+        } else {
             String loginCode = loginTextField.getText();
-            if (uservice.canLogIn(loginCode)) {
-                setDisableItems(false);
-                this.loggedin = true;
-                showMessage(Alert.AlertType.CONFIRMATION, "Login !", "You have been logged in!");
-                loginButton.setText("Logout");
-                loginTextField.setDisable(true);
-                flightsList.setItems(this.fmodel);
-            }
-            else {
-                showMessage(Alert.AlertType.ERROR, "Login !", "Wrong password. Are you trying to hack us ?");
-            }
+            client.tryToLogin(loginCode);
         }
     }
-    @FXML private void searchButtonAction() throws SQLException {
+
+    @FXML
+    private void searchButtonAction() throws SQLException {
         String destination = destinationTextField.getText();
         String ddate = ddateTextField.getText();
         String dtime = dtimeTextField.getText();
@@ -121,19 +135,21 @@ public class loginViewController {
         flightsList.setItems(olist);
         clearSearchFields();
     }
-    @FXML private void buyticketsButtonAction() throws SQLException {
+
+    @FXML
+    private void buyticketsButtonAction() throws SQLException {
         String destination = bdestinationTextField.getText();
         String szTickets = ticketsTextField.getText();
         int tickets;
         try {
-        tickets = Integer.parseInt(szTickets);}
-        catch(Exception ex) {
+            tickets = Integer.parseInt(szTickets);
+        } catch (Exception ex) {
             showMessage(Alert.AlertType.ERROR, "Error", "Error parsing tickets number !");
             return;
         }
         Flight f = fservice.getFlight(destination);
         if (f == null) {
-            showMessage(Alert.AlertType.ERROR, "Error !", "There is no flight to destination: "+destination);
+            showMessage(Alert.AlertType.ERROR, "Error !", "There is no flight to destination: " + destination);
             return;
         }
         if (f.getSeats() < tickets) {
@@ -145,28 +161,55 @@ public class loginViewController {
         clearBuyTicketsFields();
         showMessage(Alert.AlertType.CONFIRMATION, "Succes !", "Tickets bought");
     }
-    @FXML private void getflightsButtonAction() throws SQLException {
+
+    @FXML
+    private void getflightsButtonAction() throws SQLException {
         fmodel = FXCollections.observableArrayList(fservice.getAll());
         flightsList.setItems(fmodel);
     }
+
     private void clearSearchFields() {
         destinationTextField.setText("");
         ddateTextField.setText("");
         dtimeTextField.setText("");
     }
+
     private void clearBuyTicketsFields() {
         bdestinationTextField.setText("");
         touristsTextField.setText("");
         ticketsTextField.setText("");
     }
+
     public loginViewController() {
         //flightsList.setItems(fmodel);
     }
-    static void showMessage(Alert.AlertType type, String header, String text){
-        Alert message=new Alert(type);
+
+    static void showMessage(Alert.AlertType type, String header, String text) {
+        Alert message = new Alert(type);
         message.setHeaderText(header);
         message.setContentText(text);
         //message.initOwner(dialogStage);
         message.showAndWait();
+    }
+
+    public void onLoginResult(final boolean canLogIn) {
+        Platform.runLater(new Runnable() {
+            public void run() {
+                if (canLogIn) {
+                    setDisableItems(false);
+                    loginViewController.this.loggedin = true;
+                    showMessage(Alert.AlertType.CONFIRMATION, "Login !", "You have been logged in!");
+                    loginButton.setText("Logout");
+                    loginTextField.setDisable(true);
+                    flightsList.setItems(loginViewController.this.fmodel);
+                } else {
+                    showMessage(Alert.AlertType.ERROR, "Login !", "Wrong password. Are you trying to hack us ?");
+                }
+            }
+        });
+    }
+
+    public void onLoginError() {
+        showMessage(Alert.AlertType.ERROR, "Erorrrr !", "Some issues with the sockets pff");
     }
 }
