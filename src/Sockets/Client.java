@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 /**
- * Created by Musafir on 4/4/2017.
+ * Created by Cosmin on 4/4/2017.
  */
 public class Client {
 
